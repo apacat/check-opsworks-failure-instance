@@ -1,0 +1,43 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: check-opsworks-failure-instance
+
+provider:
+  name: aws
+  runtime: python3.6
+
+# you can overwrite defaults here
+  stage: prod
+  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "opsworks:DescribeInstances"
+        - "opsworks:DescribeStackSummary"
+      Resource: arn:aws:opsworks:*
+
+# you can define service wide environment variables here
+  environment:
+    stackids:
+    opsworks_api_resion: us-east-1
+    chatwork_api_token:
+    chatwork_roomid:
+
+functions:
+  check:
+    handler: handler.lambda_handler
+    events:
+      - schedule: rate(5 minutes)
