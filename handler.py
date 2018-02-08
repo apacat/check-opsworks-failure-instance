@@ -29,10 +29,14 @@ def lambda_handler(event, context):
         failure_stacks[stack_name] = get_instance_info(stack_name, stack_id)
 
     msg = make_msg(failure_stacks)
+    postdata = os.environ['temp_msg'].format('\n'.join(msg))
 
-    postdata_temp = '[info][title][alert] 正常ではないインスタンスがあります[/title]{0}[/info]'.format('\n'.join(msg))
-    chatwork_client.post_messages(
-        room_id=chatwork_roomid, message=postdata_temp)
+    try:
+        chatwork_client.post_messages(
+            room_id=chatwork_roomid, message=postdata)
+    except Exception as e:
+        logger.error('post error')
+        raise(str(e))
 
     return "end"
 
@@ -75,8 +79,6 @@ def get_instance_info(stack_name: str, stack_id: str):
     failure_instances = [instance for instance in instances[0]['Instances'] if instance['Status'] == 'setup_failed' or instance['Status'] == 'running_failed']
     for instance in failure_instances:
         instance_result[instance['Hostname']] = instance['Status']
-        #instance_result.append(instance['Hostname'])
-        #instance_result.append(instance['Status'])
 
     return instance_result
 
@@ -93,6 +95,5 @@ def make_msg(msg_data: dict):
     for stack_name, instances in msg_data.items():
         for hostname, status in instances.items():
             msg.append(chatwork_msg_temp.format(stack_name, hostname, status))
-            #msg.append(chatwork_msg_temp.format(stack_name, instance[0], instance[1]))
 
     return msg

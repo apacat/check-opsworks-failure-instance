@@ -31,10 +31,11 @@ provider:
 
 # you can define service wide environment variables here
   environment:
-    stackids:
+    stackids: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
     opsworks_api_resion: us-east-1
-    chatwork_api_token:
-    chatwork_roomid:
+    chatwork_api_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    chatwork_roomid: 'xxxxxxxx'
+    temp_msg: '[info][title][alert] found failure instance[/title]{0}[/info]'
 
 functions:
   check:
